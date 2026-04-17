@@ -6,7 +6,7 @@ from fastapi.security import APIKeyHeader
 
 from memory_service.config import get_settings
 from memory_service.db import VectorDB
-from memory_service.embedder import Embedder
+from memory_service.embedder import make_embedder
 from memory_service.models import HealthResponse
 from memory_service.routers import entries, ingest, search, sync
 
@@ -20,7 +20,7 @@ api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 async def lifespan(app: FastAPI):
     settings = get_settings()
 
-    embedder = Embedder(settings.embedding_model, settings.embedding_device)
+    embedder = make_embedder(settings)
     app.state.embedder = embedder
 
     db = await VectorDB.create(settings.database_url, embedder.dimension)

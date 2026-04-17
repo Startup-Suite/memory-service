@@ -4,10 +4,11 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
+COPY pyproject.toml uv.lock README.md ./
+RUN uv sync --frozen --no-dev --no-install-project
 
 COPY src/ src/
+RUN uv sync --frozen --no-dev
 
 EXPOSE 8100
 CMD ["uv", "run", "uvicorn", "memory_service.main:app", "--host", "0.0.0.0", "--port", "8100"]
