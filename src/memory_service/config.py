@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -7,8 +8,10 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="MEMORY_")
 
     # Embedding
+    embedding_backend: Literal["local", "http"] = "local"
     embedding_model: str = "BAAI/bge-large-en-v1.5"
-    embedding_device: str = "cuda"
+    embedding_url: str | None = None  # required when backend=http
+    embedding_device: str = "cuda"  # only used when backend=local
 
     # Postgres (pgvector)
     database_url: str = "postgresql://memory:memory@localhost:5432/memory"
